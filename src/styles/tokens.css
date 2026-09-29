@@ -1,0 +1,104 @@
+/*
+ * Design tokens. Every color in the app must come from here; components
+ * never hardcode a color value.
+ *
+ * Light is the default. Dark applies when <html data-theme="dark"> is set,
+ * or when the OS asks for dark and no explicit theme has been chosen.
+ */
+:root {
+  color-scheme: light;
+
+  --bg: #f2f5f9;
+  --surface: #ffffff;
+  --text: #151a21;
+  --muted: #55606f;
+  --border: #d3dae3;
+  --border-strong: #7f8996;
+
+  --accent: #1d4ed8;
+  --accent-hover: #1a41b0;
+  --accent-contrast: #ffffff;
+
+  --danger: #b42318;
+  --danger-hover: #8c1c13;
+  --danger-contrast: #ffffff;
+
+  --focus: #1d4ed8;
+  --shadow: 0 1px 2px rgb(16 24 40 / 0.08);
+  --shadow-raised: 0 4px 12px rgb(16 24 40 / 0.1);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #0d1117;
+  --surface: #161b22;
+  --text: #e6edf3;
+  --muted: #9ba7b4;
+  --border: #303841;
+  --border-strong: #49525d;
+
+  --accent: #74a9ff;
+  --accent-hover: #9cc5ff;
+  --accent-contrast: #06101f;
+
+  --danger: #ff8f85;
+  --danger-hover: #ffb3ab;
+  --danger-contrast: #2a0705;
+
+  --focus: #74a9ff;
+  --shadow: 0 1px 2px rgb(1 4 9 / 0.6);
+  --shadow-raised: 0 4px 12px rgb(1 4 9 / 0.7);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+
+    --bg: #0d1117;
+    --surface: #161b22;
+    --text: #e6edf3;
+    --muted: #9ba7b4;
+    --border: #303841;
+    --border-strong: #6b7684;
+
+    --accent: #74a9ff;
+    --accent-hover: #9cc5ff;
+    --accent-contrast: #06101f;
+
+    --danger: #ff8f85;
+    --danger-hover: #ffb3ab;
+    --danger-contrast: #2a0705;
+
+    --focus: #74a9ff;
+    --shadow: 0 1px 2px rgb(1 4 9 / 0.6);
+    --shadow-raised: 0 4px 12px rgb(1 4 9 / 0.7);
+  }
+}
+
+/*
+ * High contrast mode. Declared after the palette blocks on purpose: they share
+ * specificity, and the last one wins. It only touches the tokens that carry
+ * meaning, not the accent the user picked.
+ */
+:root[data-contrast='high'] {
+  --muted: #3d4753;
+  --border: #6b7683;
+  --border-strong: #262d35;
+  --shadow: 0 0 0 1px var(--border-strong);
+  --shadow-raised: 0 0 0 1px var(--border-strong);
+}
+
+:root[data-theme='dark'][data-contrast='high'] {
+  --muted: #d3dbe4;
+  --border: #7c8794;
+  --border-strong: #c9d2dc;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light'])[data-contrast='high'] {
+    --muted: #d3dbe4;
+    --border: #7c8794;
+    --border-strong: #c9d2dc;
+  }
+}

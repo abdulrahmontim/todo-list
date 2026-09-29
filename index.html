@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A small, fast todo list that stores everything in your browser." />
+    <title>Todo List</title>
+    <!--
+      Runs before first paint so the correct theme, contrast mode and accent are
+      already on <html>. The key, the accepted theme values and the contrast
+      cutoff are duplicated from src/features/settings on purpose, because this
+      script cannot import anything. `inlineScript.test.ts` guards the copies.
+    -->
+    <script>
+      (function () {
+        try {
+          var root = document.documentElement;
+          var raw = localStorage.getItem('todo.settings.v1');
+          var saved = raw ? JSON.parse(raw) : null;
+          if (!saved || typeof saved !== 'object') return;
+
+          if (saved.theme === 'light' || saved.theme === 'dark') {
+            root.setAttribute('data-theme', saved.theme);
+          }
+          if (saved.highContrast === true) {
+            root.setAttribute('data-contrast', 'high');
+          }
+
+          var match = typeof saved.accent === 'string' && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(saved.accent);
+          if (!match) return;
+
+          var hex = match[1];
+          if (hex.length === 3) {
+            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+          }
+          root.style.setProperty('--accent', '#' + hex);
+          root.style.setProperty('--focus', '#' + hex);
+
+          var luminance = 0;
+          var weights = [0.2126, 0.7152, 0.0722];
+          for (var i = 0; i < 3; i++) {
+            var channel = parseInt(hex.slice(i * 2, i * 2 + 2), 16) / 255;
+            var linear = channel <= 0.03928 ? channel / 12.92 : Math.pow((channel + 0.055) / 1.055, 2.4);
+            luminance += weights[i] * linear;
+          }
+          root.style.setProperty('--accent-contrast', luminance > 0.1791 ? '#000000' : '#ffffff');
+        } catch (error) {
+          // Unreadable or malformed storage: fall back to the default palette.
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
